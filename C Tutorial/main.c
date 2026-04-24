@@ -35,10 +35,10 @@ typedef struct {
 
 int main(){
     
-    // Hello world tutorial
+    // Hello world 
     printf("Hello World!\n");
 
-    // Integer Variable tutorial
+    // Integer Variable 
     short number_8 = 8;        // small integer (>=16 bits)
     int number_16 = 16;        // standard integer (usually 32 bits)
     long number_32 = 32;       // large integer (>=32 bits)
@@ -50,7 +50,7 @@ int main(){
     printf("%d\n", sum_number);
 
 
-    // Array tutorial
+    // Array 
     int a_grades[3]; // if is 3 then 0,1,2 inclusively, defined by how many numbers inside the array
     int a_average;
 
@@ -63,7 +63,7 @@ int main(){
     printf("The average of the 3 grades is %d\n", a_average);
 
 
-    // Multidimensional arrays tutorial
+    // Multidimensional arrays 
     // multidimensional is like matrix/matrices in math
     float m_average;
     int m_grades[2][5];
@@ -92,19 +92,20 @@ int main(){
         printf("The average marks obtained in subject %d is: %.2f\n", subjects, m_average);
     }
 
-    //Condition Tutorial
+    //Condition 
     guessNumber(500);
     guessNumber(600);
     guessNumber(555);
 
     
-    // String Tutorial
+    // String 
     char first_name[20] = "John";
-    char last_name[20] = "Doe";
-    strncat(first_name,last_name, 3);
-    printf("%s\n", first_name);
+    char last_name[20] = " Doe";
+    char * whole_name = "John Doe";
+    strncat(first_name,last_name, 4);
+    printf("%s and %s\n", first_name, whole_name);
     
-    // For Loops Tutorial
+    // For Loops
 
     int array[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     int final_result = 1;
@@ -117,7 +118,7 @@ int main(){
     }
     printf("This is the factorial for %d: %d \n", array_size, final_result);
     
-    // While Loops Tutorial
+    // While Loops
     int while_array[10] = {1,2,3,4,5,6,7,8,9,10};
     int while_index = 0;
 
@@ -133,15 +134,15 @@ int main(){
     }
 
 
-    // Function Tutorial
+    // Function
     print_big(15);
     print_big(1);
 
-    // Static Tutorial
+    // Static
     printf("Sum = %d \n", sum(15));
     printf("Sum = %d \n", sum(55));
 
-    // Pointers Tutorial
+    // Pointers
     int n = 0;
     int * pointer_to_n = &n;
     int p_i;
@@ -152,12 +153,15 @@ int main(){
 
     printf("%d \n", n);
 
-    // Struc Tutorial
+    // Struc
     person p_person;
     p_person.name = "Will_Dev";
     p_person.age = 23;
 
     printf("Hello, my name is %s and my age is %d \n", p_person.name, p_person.age);
+
+    // Function arguments by reference
+
 
 
     return 0;
