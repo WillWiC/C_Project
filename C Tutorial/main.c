@@ -124,7 +124,7 @@ int main(){
         }            
 
         printf("This is the while loop tutorial answer: %d \n", while_array[while_index]);
-
+        
     }
 
 
@@ -137,7 +137,16 @@ int main(){
     printf("Sum = %d \n", sum(55));
 
     // Pointers Tutorial
-    
+    int n = 0;
+    int * pointer_to_n = &n;
+    int p_i;
+
+    for ( p_i = 0; p_i < 5; p_i++){
+        *pointer_to_n+=1;
+    }
+
+    printf("%d", n);
+
     return 0;
 }
 
