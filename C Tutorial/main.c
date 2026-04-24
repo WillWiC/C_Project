@@ -27,6 +27,11 @@ int sum(int num_1) {
     return sum;
 }
 
+typedef struct {
+    char * name;
+    int age;
+}   person;
+
 
 int main(){
     
@@ -145,7 +150,15 @@ int main(){
         *pointer_to_n+=1;
     }
 
-    printf("%d", n);
+    printf("%d \n", n);
+
+    // Struc Tutorial
+    person p_person;
+    p_person.name = "Will_Dev";
+    p_person.age = 23;
+
+    printf("Hello, my name is %s and my age is %d \n", p_person.name, p_person.age);
+
 
     return 0;
 }
