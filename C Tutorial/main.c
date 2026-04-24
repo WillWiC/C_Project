@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 void guessNumber(int guess){
@@ -165,7 +166,14 @@ int main(){
     printf("Hello, my name is %s and my age is %d \n", p_person.name, p_person.age);
 
 
-    //
+    // Dynamic Allocation
+    person * myperson = (person *) malloc(sizeof(person));
+
+    myperson->age = 40;
+    myperson->name = "Christiano Ronaldo";
+
+    printf("Hello, my name is %s and my age is %d \n", myperson->name, myperson->age);
+    free(myperson);
 
     return 0;
 }
