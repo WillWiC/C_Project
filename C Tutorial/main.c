@@ -161,9 +161,11 @@ int main(){
     p_person.name = "Will_Dev";
     p_person.age = 23;
 
-    // Function arguments by reference
     birthday(&p_person.age);
     printf("Hello, my name is %s and my age is %d \n", p_person.name, p_person.age);
+
+
+    //
 
     return 0;
 }
