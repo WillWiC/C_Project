@@ -21,6 +21,10 @@ void print_big(int number){
     }
 }
 
+void birthday(int *age) {
+    (*age)++;
+}
+
 int sum(int num_1) {
     static int sum;
     sum += num_1;
@@ -28,14 +32,25 @@ int sum(int num_1) {
     return sum;
 }
 
+unsigned int factorial(unsigned int num){
+
+    if (num == 0){
+        return 1;
+    }
+
+    else if (num == 1){
+        return num;
+    }
+
+    else {
+        return num * factorial(num-1);
+    }
+}
+
 typedef struct {
     char * name;
     int age;
 }   person;
-
-void birthday(int *age) {
-    (*age)++;
-}
 
 int main(){
     
@@ -211,6 +226,14 @@ int main(){
     /* TODO: free the top-level pointer */
     free(pnumbers);
     
+
+    // Recursion 
+    printf("0! = %i\n", factorial(0));
+    printf("1! = %i\n", factorial(1));
+    printf("3! = %i\n", factorial(3));
+    printf("5! = %i\n", factorial(5));
+
+
     return 0;
 }
 
