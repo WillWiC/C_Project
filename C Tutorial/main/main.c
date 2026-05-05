@@ -2,28 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-void guessNumber(int guess){
-    if (guess == 555) {
-        printf("Correct, You guess it! \n");
-    } else if ( guess < 555) {
-        printf("Your guess is too low \n");
-    } else if ( guess > 555) {
-        printf("Your guess is too high \n");
-    }
-}
 
-void print_big(int number){
-    if (number > 10){
-        printf("%d is big number. \n", number);
-    } else {
-        printf("Invalid big number. \n");
+typedef struct person {
+    char * name;
+    int age;
+}   person_t;
 
-    }
-}
-
-void birthday(int *age) {
-    (*age)++;
-}
+typedef struct node {
+    int value;
+    struct node *next;
+}   node_t;
 
 int sum(int num_1) {
     static int sum;
@@ -47,10 +35,56 @@ unsigned int factorial(unsigned int num){
     }
 }
 
-typedef struct {
-    char * name;
-    int age;
-}   person;
+void guessNumber(int guess){
+    if (guess == 555) {
+        printf("Correct, You guess it! \n");
+    } else if ( guess < 555) {
+        printf("Your guess is too low \n");
+    } else if ( guess > 555) {
+        printf("Your guess is too high \n");
+    }
+}
+
+void print_big(int number){
+    if (number > 10){
+        printf("%d is big number. \n", number);
+    } else {
+        printf("Invalid big number. \n");
+
+    }
+}
+
+void birthday(int *age) {
+    (*age)++;
+}
+
+void print_list(node_t *head) {
+    node_t *current = head;
+
+    while (current != NULL) {
+        printf("%d", current->value);
+
+        if (current->next != NULL) {
+            printf(" -> "); // separator between nodes
+        }
+
+        current = current->next;
+    }
+
+    printf("\n"); // newline at the end
+}
+
+void push(node_t * head, int val) {
+    node_t * current = head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+
+    /* now we can add a new variable */
+    current->next = (node_t *) malloc(sizeof(node_t));
+    current->next->value = val;
+    current->next->next = NULL;
+}
 
 int main(){
     
@@ -173,7 +207,7 @@ int main(){
     printf("%d \n", n);
 
     // Struc & Function arguments by reference
-    person p_person;
+    person_t p_person;
     p_person.name = "Will_Dev";
     p_person.age = 23;
 
@@ -182,7 +216,7 @@ int main(){
 
 
     // Dynamic Allocation
-    person * myperson = (person *) malloc(sizeof(person));
+    person_t * myperson = (person_t *) malloc(sizeof(person_t));
 
     myperson->age = 40;
     myperson->name = "Christiano Ronaldo";
@@ -232,7 +266,6 @@ int main(){
     printf("1! = %i\n", factorial(1));
     printf("3! = %i\n", factorial(3));
     printf("5! = %i\n", factorial(5));
-
 
     return 0;
 }
