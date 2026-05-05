@@ -1,7 +1,4 @@
 # Intensive Guide: Building C Projects
-
-This guide provides a roadmap for building the four projects listed in your roadmap, progressing from basic syntax to advanced memory management.
-
 ---
 
 ## 1. Rule-Based Calculator / Unit Converter
