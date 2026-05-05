@@ -58,34 +58,6 @@ void birthday(int *age) {
     (*age)++;
 }
 
-void print_list(node_t *head) {
-    node_t *current = head;
-
-    while (current != NULL) {
-        printf("%d", current->value);
-
-        if (current->next != NULL) {
-            printf(" -> "); // separator between nodes
-        }
-
-        current = current->next;
-    }
-
-    printf("\n"); // newline at the end
-}
-
-void push(node_t * head, int val) {
-    node_t * current = head;
-    while (current->next != NULL) {
-        current = current->next;
-    }
-
-    /* now we can add a new variable */
-    current->next = (node_t *) malloc(sizeof(node_t));
-    current->next->value = val;
-    current->next->next = NULL;
-}
-
 int main(){
     
     // Hello world 
