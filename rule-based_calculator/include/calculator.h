@@ -39,24 +39,24 @@ typedef double calc_num_t;  // Numeric type used throughout
 extern bool DEBUG;
 
 typedef enum {
-    ERR_OK = 0,
-    ERR_INVALID_TOKEN,
-    ERR_UNBALANCED_PAREN,
-    ERR_OVERFLOW,
-    ERR_NULL_POINTER,
-    ERR_DIVIDE_BY_ZERO
-} calc_error_t;
+   ERR_OK = 0,
+   ERR_INVALID_TOKEN,
+   ERR_UNBALANCED_PAREN,
+   ERR_OVERFLOW,
+   ERR_NULL_POINTER,
+   ERR_DIVIDE_BY_ZERO
+}  calc_error_t;
 
 static const char* error_code(calc_error_t error) {
-    switch (error) {
-        case ERR_OK:              return "No error";
-        case ERR_INVALID_TOKEN:   return "Invalid token";
-        case ERR_UNBALANCED_PAREN:return "Unbalanced parenthesis";
-        case ERR_OVERFLOW:        return "Numeric overflow";
-        case ERR_NULL_POINTER:    return "Null Pointer";
-        case ERR_DIVIDE_BY_ZERO:   return "Cannot divide by zero";
-        default:                  return "Unknown error";
-    }
+   switch (error) {
+      case ERR_OK:              return "No error";
+      case ERR_INVALID_TOKEN:   return "Invalid token";
+      case ERR_UNBALANCED_PAREN:return "Unbalanced parenthesis";
+      case ERR_OVERFLOW:        return "Numeric overflow";
+      case ERR_NULL_POINTER:    return "Null Pointer";
+      case ERR_DIVIDE_BY_ZERO:   return "Cannot divide by zero";
+      default:                  return "Unknown error";
+   }
 }
 
 /* 
@@ -72,6 +72,22 @@ TODO: Clarify numeric representation (double vs fixed-point) and document struct
 TODO: Consider opaque context struct (calc_ctx_t) for engine state instead of globals 
 */
 
+typedef enum {
+   NUMBER,
+   OPERATOR,
+   LPAREN,
+   RPAREN,
+   IDENTIFIER,
+   FUNCTION,
+   END
+}  TokenType;
+
+typedef struct {
+   char* type;
+   double numeric_value;
+   int start_index;
+   int length;
+}  Token;
 
 /*
 --------------------------------------------------------------------------
@@ -99,32 +115,31 @@ TODO: Consider exposing only accessor functions for operator info, not the table
 // Basic Operations
 
 int calc_add(double num_1, double num_2, double *out) {
-    if (out == NULL) return error_code(ERR_NULL_POINTER);
-    *out = num_1 + num_2;
-    return error_code(ERR_OK);
+   if (out == NULL) return error_code(ERR_NULL_POINTER);
+   *out = num_1 + num_2;
+   return error_code(ERR_OK);
 }
 
 int calc_subtract(double num_1, double num_2, double *out){
-    if (out == NULL) return error_code(ERR_NULL_POINTER);
-    *out = num_1 - num_2;
-    return error_code(ERR_OK);
+   if (out == NULL) return error_code(ERR_NULL_POINTER);
+   *out = num_1 - num_2;
+   return error_code(ERR_OK);
 }
 
 int calc_multiply(double num_1, double num_2, double *out) {
-    if (out == NULL) return error_code(ERR_NULL_POINTER);
-    *out = num_1 * num_2;
-    return error_code(ERR_OK);
+   if (out == NULL) return error_code(ERR_NULL_POINTER);
+   *out = num_1 * num_2;
+   return error_code(ERR_OK);
 }
 
-
 int calc_divide(double num_1, double num_2, double *out) {
-    if (num_2 == 0) {
-        return error_code(ERR_DIVIDE_BY_ZERO);
-    } 
-    else{
-      *out = num_1 / num_2;
-      return error_code(ERR_OK);
-    }
+   if (num_2 == 0) {
+      return error_code(ERR_DIVIDE_BY_ZERO);
+   } 
+   else{
+   *out = num_1 / num_2;
+   return error_code(ERR_OK);
+   }
 }
 
 /* Parser Helpers
