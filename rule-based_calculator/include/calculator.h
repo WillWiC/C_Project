@@ -96,41 +96,31 @@ calc_error_t calc_evaluate(const Token *tokens, size_t token_count, calc_num_t *
 // Error Utility 
 const char* calc_strerror(calc_error_t err); // Convert enum to string
 
-/*
-Thread-safety TODOs — implement before marking API as reentrant:
+// Initialization, lifecycle, thread-safety, and testing hooks
 
-TODO: Define a calc_ctx_t context struct to hold all engine state (token buffer,
+/*
+TODO: Define calc_ctx_t context struct to hold all engine state (token buffer,
       operator table, error state) so each caller owns its own copy instead of
       sharing globals
 
-TODO: Remove extern bool DEBUG global — replace with a field inside calc_ctx_t
-      or a thread-local variable (_Thread_local bool debug)
+TODO: Add calc_init(calc_ctx_t*) / calc_shutdown(calc_ctx_t*) to set up and
+      tear down context — required if any state needs one-time initialization
 
 TODO: Update all public API functions to accept calc_ctx_t* as first parameter
       so no function relies on shared global state
 
-TODO: Document in the header which functions are safe to call concurrently
-      once context structs are in place
+TODO: Remove extern bool DEBUG — replace with a field inside calc_ctx_t or
+      _Thread_local bool; add calc_set_debug(calc_ctx_t*, bool) accessor
 
-TODO: If the operator table (calc_get_operator) reads from a shared array,
-      ensure it is read-only after init — write access must be guarded or
-      removed from the public API
+TODO: Ensure calc_get_operator reads from a read-only table after init —
+      no write access through the public API
 
-TODO: Add init and shutdown functions (calc_init / calc_shutdown) that
-      set up and tear down a calc_ctx_t — required if any state needs
-      one-time initialization
+TODO: Add small stable test hooks (e.g., token_compare, calc_ctx_reset_for_test)
 
-TODO: Only after all globals are removed, update the top comment to:
-      "Thread-safety: Functions are reentrant when called with separate calc_ctx_t instances"
-*/
-
-// Initialization, lifecycle, and testing hooks
-
-/* 
-TODO: Add init_engine/shutdown_engine or context create/destroy functions if stateful
-TODO: Add small, stable test hooks (e.g., token_compare, engine_reset_for_test)
-TODO: Add DEBUG flag accessor function instead of exposing global variable
 TODO: Document logging behavior and how to enable verbose diagnostics
+
+TODO: Once all globals are removed, update the top comment to:
+      "Thread-safety: Functions are reentrant when called with separate calc_ctx_t instances"
 */
 
 
