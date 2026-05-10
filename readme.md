@@ -1,10 +1,10 @@
 # Building C Projects
 ---
 ## 0. C Tutorial
-**Focus:** Basic Tutorials to familar the syntax and key concepts of c
+**Focus:** Basic Tutorials to familar the syntax and key concepts of C
 
 ---
-## 1. Rule-Based Calculator / Unit Converter
+## 1. Rule-Based Calculator
 **Focus:** Basics (Variables, I/O, Control Flow)
 
 ### Key Concepts
@@ -51,20 +51,3 @@
 4. **Formatting:** Use structured delimiters (like commas or tabs) to make the data easy to parse later.
 
 ---
-
-## 4. Text-Based Adventure Game
-**Focus:** Pointers & Dynamic Memory
-
-### Key Concepts
-- **Pointers:** Use pointers to link different "Room" structs together (creating a Graph structure).
-- **Dynamic Allocation:** Use `malloc()` and `free()` if you want to create a world of variable size.
-- **Nested Structs:** A `Room` struct should contain a description and pointers to adjacent rooms (e.g., `struct Room *north;`).
-
-### Implementation Steps
-1. **Map Design:** Sketch a simple map on paper first.
-2. **Room Linking:** Initialize room pointers to connect them (e.g., `kitchen.north = &livingRoom;`).
-3. **Game Loop:** 
-    - Print the current room's description.
-    - Ask for a direction (North, South, East, West).
-    - Update the `currentRoom` pointer based on the choice.
-4. **Inventory (Optional):** Use a linked list to store items the player picks up, requiring pointer manipulation to add/remove items.
