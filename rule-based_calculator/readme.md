@@ -1,4 +1,4 @@
-# Guide: Building a Rule-Based Calculator Service in C
+# Building a Rule-Based Calculator Service in C
 
 This guide outlines the development of a terminal-based rule-based calculator in C, designed to act as a long-running service.
 
@@ -12,7 +12,7 @@ The service will follow a modular design:
 ```text
 project-root/
 ├── include/
-│   └── calculator.h
+│   └── calculator.h    # Calculator Library for Pre-Declarations mainly for error handling
 ├── src/
 │   ├── main.c          # Service entry point
 │   ├── parser.c        # Rule definition and parsing
