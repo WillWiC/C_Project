@@ -4,9 +4,9 @@
 /* 
 
 Calculator Library
-Purpose: Provide parsing and evaluation of arithmetic expressions.
+Purpose: Provide parsing and evaluation of arithmetic expressions
 Public API: calc_tokenize(), calc_evaluate(), calc_free_result()
-Thread-safety: Functions are reentrant if separate contexts are used.
+Thread-safety: Functions are reentrant when called with separate calc_ctx_t instances
 
 */
 
@@ -17,16 +17,11 @@ Thread-safety: Functions are reentrant if separate contexts are used.
 #include <stdint.h>
 #include <string.h>
 
-// Configuration and limits
+// Configuration and Declarations
 
 #define MAX_INPUT_LEN 256  // Maximum characters in input expression
 #define MAX_TOKENS    50   // Maximum tokens parsed from input
 typedef double calc_num_t;  // Numeric type used throughout
-
-// Error handling
-
-extern bool DEBUG;
-void calc_set_debug(bool enabled);
 
 typedef enum {
    CALC_ERR_OK = 0,
@@ -37,7 +32,6 @@ typedef enum {
    CALC_ERR_DIVIDE_BY_ZERO
 }  calc_error_t;
 
-// Types and data structures
 typedef enum {
    TOKEN_NUMBER,
    TOKEN_OPERATOR,
@@ -55,8 +49,6 @@ typedef struct {
    int   length;
 }  Token;
 
-// Arrays and operator metadata
-
 typedef enum {
    CALC_LEFT,
    CALC_RIGHT,
@@ -72,57 +64,45 @@ typedef struct {
    OperatorFunc func;
 } Operator;
 
+typedef struct {
+      Operator operator_table[MAX_TOKENS];
+      calc_error_t error_state;
+      Token token_buffer[MAX_TOKENS];
+      bool debug;
+} calc_ctx_t;
+
 Operator* calc_get_operator(const char *symbol);
 
 // Public API function declarations
 
 // returns error code for each operation
-calc_error_t calc_add(double num_1, double num_2, double *out);
-calc_error_t calc_subtract(double num_1, double num_2, double *out);
-calc_error_t calc_multiply(double num_1, double num_2, double *out);
-calc_error_t calc_divide(double num_1, double num_2, double *out);
+calc_error_t calc_add(calc_ctx_t* calc_status,calc_num_t num_1, calc_num_t num_2, calc_num_t *out);
+calc_error_t calc_subtract(calc_ctx_t* calc_status,calc_num_t num_1, calc_num_t num_2, calc_num_t *out);
+calc_error_t calc_multiply(calc_ctx_t* calc_status, calc_num_t num_1, calc_num_t num_2, calc_num_t *out);
+calc_error_t calc_divide(calc_ctx_t* calc_status, calc_num_t num_1, calc_num_t num_2, calc_num_t *out);
 
 // Tokenization
-calc_error_t calc_tokenize(char* input, Token* token);  // Tokenize the input
-void whitespace_skipper(const char *input);  // Advance past whitespace in input
+calc_error_t calc_tokenize(calc_ctx_t* calc_status, char* input, Token* token, size_t *token_count);  // Tokenize the input
+void whitespace_skipper(calc_ctx_t* calc_status, const char *input);  // Advance past whitespace in input
 
 // Token Collection and Output
-char* digit_collector(char* input, Token* token_buffer, int token_count);  // Store digits from the input
-int operator_precedence(double num_1, double num_2, Operator* op);   // Return precedence level of an operator
-Associativity associativity_checker(Associativity output_associativity);  // Return associativity of an operator
-calc_error_t calc_infix_to_postfix(const Token *in, size_t in_count, Token *out, size_t *out_count);  // convert infix to postfix expression
-calc_error_t calc_evaluate(const Token *tokens, size_t token_count, calc_num_t *result);  // Evaluate postfix expression and return result
+char* digit_collector(calc_ctx_t* calc_status, char* input, Token* token_buffer, int token_count);  // Store digits from the input
+int operator_precedence(calc_ctx_t* calc_status, const Operator *op);  // Return precedence level of an operator
+Associativity associativity_checker(calc_ctx_t* calc_status, Associativity output_associativity);  // Return associativity of an operator
+calc_error_t calc_infix_to_postfix(calc_ctx_t* calc_status, const Token *in, size_t in_count, Token* token, size_t *out_count);  // convert infix to postfix expression
+calc_error_t calc_evaluate(calc_ctx_t* calc_status, const Token *tokens, size_t token_count, calc_num_t *result);  // Evaluate postfix expression and return result
 
 // Error Utility 
 const char* calc_strerror(calc_error_t err); // Convert enum to string
 
 // Initialization, lifecycle, thread-safety, and testing hooks
 
-/*
-TODO: Define calc_ctx_t context struct to hold all engine state (token buffer,
-      operator table, error state) so each caller owns its own copy instead of
-      sharing globals
+calc_error_t calc_init(calc_ctx_t*);
+calc_error_t calc_shutdown(calc_ctx_t*);
+void calc_free_result(calc_ctx_t*);
 
-TODO: Add calc_init(calc_ctx_t*) / calc_shutdown(calc_ctx_t*) to set up and
-      tear down context — required if any state needs one-time initialization
-
-TODO: Update all public API functions to accept calc_ctx_t* as first parameter
-      so no function relies on shared global state
-
-TODO: Remove extern bool DEBUG — replace with a field inside calc_ctx_t or
-      _Thread_local bool; add calc_set_debug(calc_ctx_t*, bool) accessor
-
-TODO: Ensure calc_get_operator reads from a read-only table after init —
-      no write access through the public API
-
-TODO: Add small stable test hooks (e.g., token_compare, calc_ctx_reset_for_test)
-
-TODO: Document logging behavior and how to enable verbose diagnostics
-
-TODO: Once all globals are removed, update the top comment to:
-      "Thread-safety: Functions are reentrant when called with separate calc_ctx_t instances"
-*/
-
-
+int token_compare(Token* token_1, Token* token_2);
+void calc_set_debug(calc_ctx_t*, bool);
+void calc_ctx_reset_for_test(calc_ctx_t*);
 
 #endif
