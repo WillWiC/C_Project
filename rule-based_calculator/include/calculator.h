@@ -1,13 +1,11 @@
 #ifndef CALCULATOR_H
 #define CALCULATOR_H
 
-/* 
-
-Calculator Library
-Purpose: Provide parsing and evaluation of arithmetic expressions
+/*
+Calculator Library — Header
+Purpose: Provide declarations for parsing and evaluation of arithmetic expressions
 Public API: calc_tokenize(), calc_evaluate(), calc_free_result()
 Thread-safety: Functions are reentrant when called with separate calc_ctx_t instances
-
 */
 
 // External libraries
