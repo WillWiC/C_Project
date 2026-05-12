@@ -19,6 +19,7 @@ Thread-safety: Functions are reentrant when called with separate calc_ctx_t inst
 
 #define MAX_INPUT_LEN 256  // Maximum characters in input expression
 #define MAX_TOKENS    50   // Maximum tokens parsed from input
+#define OPERATOR_TABLE_SIZE 4
 typedef double calc_num_t;  // Numeric type used throughout
 
 typedef enum {
@@ -41,10 +42,11 @@ typedef enum {
 }  TokenType;
 
 typedef struct {
-   TokenType   token;
-   double   numeric_value;
-   int   start_index;
-   int   length;
+   TokenType   token_type;
+   char        symbol[8];
+   double      numeric_value;
+   int         start_index;
+   int         length;
 }  Token;
 
 typedef enum {
@@ -53,7 +55,7 @@ typedef enum {
    CALC_NONE
 } Associativity;
 
-typedef calc_error_t (*OperatorFunc)(calc_num_t, calc_num_t, calc_num_t *out);
+typedef calc_error_t (*OperatorFunc)(calc_ctx_t *ctx, calc_num_t a, calc_num_t b, calc_num_t *out);
 
 typedef struct {
    const char *symbol;
@@ -69,7 +71,7 @@ typedef struct {
       bool debug;
 } calc_ctx_t;
 
-Operator* calc_get_operator(const char *symbol);
+Operator* calc_get_operator(calc_ctx_t *ctx, const char *symbol);
 
 // Public API function declarations
 
@@ -97,10 +99,10 @@ const char* calc_strerror(calc_error_t err); // Convert enum to string
 
 calc_error_t calc_init(calc_ctx_t*);
 calc_error_t calc_shutdown(calc_ctx_t*);
-void calc_free_result(calc_ctx_t*);
+int calc_free_result(calc_ctx_t*);
 
 int token_compare(Token* token_1, Token* token_2);
-void calc_set_debug(calc_ctx_t*, bool);
+int calc_set_debug(calc_ctx_t*, bool);
 void calc_ctx_reset_for_test(calc_ctx_t*);
 
 #endif
