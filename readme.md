@@ -1,53 +1,62 @@
 # Building C Projects
+
 ---
+
 ## 0. C Tutorial
-**Focus:** Basic Tutorials to familar the syntax and key concepts of C
-
----
-## 1. Rule-Based Calculator
-**Focus:** Basics (Variables, I/O, Control Flow)
-
-### Key Concepts
-- **Data Types:** Use `float` or `double` for precision in conversions.
-- **Input/Output:** `printf()` for display and `scanf()` for user input.
-- **Control Flow:** `switch` statements for menu selection; `if-else` for logic.
-
-### Implementation Steps
-1. **Define the Menu:** Use a loop (like `while(1)`) to keep the program running until the user chooses to exit.
-2. **Handle Categories:** Create functions for each conversion type (e.g., `convertTemperature()`, `convertWeight()`) to keep `main()` clean.
-3. **Logic:** Implement standard formulas (e.g., `F = (C * 9/5) + 32`).
-4. **Validation:** Check if the user enters valid menu numbers.
+**Focus:** Basic tutorials to familiarise with the syntax and key concepts of C
 
 ---
 
-## 2. Command-Line To-Do List
-**Focus:** Arrays & Strings
+## 1. Basic Calculator Service
+**Focus:** Basics (Variables, I/O, Control Flow) → Library Design, Header Files, Memory Layout
 
 ### Key Concepts
-- **Arrays:** Use a 2D char array `char tasks[MAX_TASKS][MAX_LENGTH]` to store strings.
-- **String Handling:** Include `<string.h>` for `strcpy()`, `strlen()`, and `strcmp()`.
-- **Loops:** Iterate through arrays to display or find specific tasks.
+- **Data Types:** `double` / `calc_num_t` for numeric precision; `typedef` to centralise the numeric type.
+- **Input/Output:** `printf()` for display; `scanf()` for user input.
+- **Control Flow:** `switch` for operator dispatch; `if-else` for error guards.
+- **Header Files:** Declarations vs definitions; include guards; declaration order.
+- **Error Handling:** Enum-based error codes (`calc_error_t`); out-parameter pattern; `calc_strerror()` for display.
+- **Function Pointers:** `OperatorFunc` typedef; storing behaviour inside a struct (`Operator`).
+- **Context Pattern:** `calc_ctx_t` bundles all engine state; passed as first parameter to every function for thread safety.
+- **Memory:** `memset` for zero-initialisation; fixed-size arrays inside structs; no heap allocation in current design.
 
-### Implementation Steps
-1. **State Management:** Use a counter variable to track how many tasks are currently in the list.
-2. **Add Task:** Get a string from the user (use `fgets()` instead of `scanf()` to allow spaces) and store it in the next available array index.
-3. **View Tasks:** Loop through the array from `0` to `counter` and print each string with its index.
-4. **Delete/Complete:** Shift array elements to "remove" an item, or use a parallel boolean array to mark tasks as "done".
+### Project Structure
+```text
+project-root/
+├── include/
+│   └── calculator.h    # All declarations — types, enums, structs, prototypes
+├── src/
+│   ├── main.c          # Entry point — wires together parser and engine
+│   ├── parser.c        # Tokenisation, infix-to-postfix conversion
+│   └── engine.c        # Arithmetic, operator table, evaluation, lifecycle
+├── tests/
+│   └── test_engine.c   # Unit tests using test hooks
+├── Makefile
+└── README.md
+```
 
----
+### Public API
+| Function | Purpose |
+|---|---|
+| `calc_init(ctx)` | Initialise context and operator table |
+| `calc_shutdown(ctx)` | Clean up context |
+| `calc_tokenize(ctx, input, tokens, count)` | Lex raw input into token array |
+| `calc_evaluate(ctx, tokens, count, result)` | Evaluate postfix token array |
+| `calc_free_result(ctx)` | Free any library-allocated result state |
+| `calc_strerror(err)` | Convert error code to string for display |
 
-## 3. Simple Database (Phonebook)
-**Focus:** Structs & File I/O
+### Implementation Order
+1. **`engine.c`** — `calc_init`, `calc_shutdown`, arithmetic functions, `calc_evaluate`
+2. **`parser.c`** — `calc_tokenize`, `whitespace_skipper`, `digit_collector`, `calc_infix_to_postfix`
+3. **`test_engine.c`** — write tests alongside each section above
+4. **`main.c`** — wire everything together last
 
-### Key Concepts
-- **Structs:** Define a `Contact` struct to group `name`, `phone`, and `email`.
-- **File Pointers:** Use `FILE *fp` with `fopen()`, `fclose()`, `fprintf()`, and `fscanf()`.
-- **Modes:** Use `"a"` for appending new contacts and `"r"` for reading the database.
-
-### Implementation Steps
-1. **Define the Schema:** Create a `struct` that represents one entry in your database.
-2. **Persistent Storage:** Every time a contact is added, write it directly to a `.txt` or `.dat` file.
-3. **Search Logic:** To find a contact, open the file in read mode, loop through every entry, and use `strcmp()` to find a match.
-4. **Formatting:** Use structured delimiters (like commas or tabs) to make the data easy to parse later.
+### Key Lessons Learned
+- A header is a **contract** — only declare what callers need; keep internals in the `.c` file.
+- Every type must be declared **before** it is used — declaration order matters even in headers.
+- **Return value = did it succeed; out-parameter = the actual result.** Never use the return value for both.
+- `typedef double calc_num_t` centralises the numeric type — use it everywhere so one change propagates.
+- Global mutable state breaks thread safety — bundle state into a context struct instead.
+- Stale TODOs are worse than no comments — delete a TODO the moment the work is done.
 
 ---
