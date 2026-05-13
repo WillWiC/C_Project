@@ -83,7 +83,7 @@ calc_error_t calc_divide(calc_ctx_t* calc_status, calc_num_t num_1, calc_num_t n
 
 // Tokenization
 calc_error_t calc_tokenize(calc_ctx_t* calc_status, char* input, Token* token, size_t *token_count);  // Tokenize the input
-void whitespace_skipper(calc_ctx_t* calc_status, const char *input);  // Advance past whitespace in input
+const char* whitespace_skipper(calc_ctx_t* calc_status, const char *input);  // Advance past whitespace in input
 
 // Token Collection and Output
 char* digit_collector(calc_ctx_t* calc_status, char* input, Token* token_buffer, int token_count);  // Store digits from the input

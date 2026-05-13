@@ -1,22 +1,3 @@
-/* ==========================================================================
-   engine.c — Implementation TODO List
-   Complete in order; each section depends on the one above it.
-   ========================================================================== 
-*/
-
-/* --------------------------------------------------------------------------
-   6. TEST HOOKS
-   Depends on: 1.1
-   --------------------------------------------------------------------------
-
-   TODO 6.1 — calc_ctx_reset_for_test(calc_ctx_t *ctx)
-      - Return if ctx is NULL
-      - Reset error_state to CALC_ERR_OK
-      - Clear token_buffer
-      - Do NOT clear operator_table — operator table should survive resets
-      - Faster than a full calc_shutdown / calc_init cycle between tests
-*/
-
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -182,7 +163,6 @@ void calc_ctx_reset_for_test(calc_ctx_t *ctx) {
     if (ctx == NULL) return;
 
     ctx->error_state = CALC_ERR_OK;
-
-    // operator_table is intentionally NOT cleared — survives resets by design
+     
     memset(ctx->token_buffer, 0, sizeof(ctx->token_buffer[0]) * MAX_TOKENS);
 }
