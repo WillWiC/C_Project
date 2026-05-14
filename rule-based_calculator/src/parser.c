@@ -4,45 +4,6 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   2. DIGIT COLLECTOR
-   Depends on: 1.1 (whitespace already skipped before this is called)
-   --------------------------------------------------------------------------
-
-   TODO 2.1 — digit_collector(calc_ctx_t *ctx, char *input,
-                               Token *token_buffer, int token_count)
-      - Return NULL if ctx, input, or token_buffer is NULL
-      - Read characters from input as long as they are digits or '.'
-        use isdigit() from <ctype.h> for digit check
-      - Convert the collected characters to a calc_num_t using strtod()
-      - Write a TOKEN_NUMBER token into token_buffer[token_count]:
-            token_buffer[token_count].token         = TOKEN_NUMBER
-            token_buffer[token_count].numeric_value = parsed value
-            token_buffer[token_count].start_index   = index where digit started
-            token_buffer[token_count].length        = number of characters read
-      - Return a pointer to the character after the last digit consumed
-        so the caller knows where to continue scanning
-*/
-
-/* --------------------------------------------------------------------------
-   3. OPERATOR PRECEDENCE AND ASSOCIATIVITY
-   Depends on: engine — calc_get_operator() must be working
-   Implement these before calc_infix_to_postfix which calls both.
-   --------------------------------------------------------------------------
-
-   TODO 3.1 — operator_precedence(calc_ctx_t *ctx, const Operator *op)
-      - Return -1 if ctx or op is NULL (signals unknown/invalid)
-      - Return op->precedence directly
-      - No calculation needed — precedence is already stored in the struct
-
-   TODO 3.2 — associativity_checker(calc_ctx_t *ctx,
-                                     Associativity output_associativity)
-      - Return CALC_NONE if ctx is NULL
-      - Return output_associativity directly
-      - Used by calc_infix_to_postfix to decide whether to pop operators
-        from the stack before pushing the current one
-*/
-
-/* --------------------------------------------------------------------------
    4. TOKENIZER
    Depends on: 1.1 (whitespace_skipper), 2.1 (digit_collector)
    --------------------------------------------------------------------------
@@ -158,32 +119,16 @@
 #include <ctype.h>
 #include <calculator.h>
 
-
-/* --------------------------------------------------------------------------
-   1. WHITESPACE SKIPPER
-   No dependencies — implement first, everything else calls this.
-   --------------------------------------------------------------------------
-
-   TODO 1.1 — whitespace_skipper(calc_ctx_t *ctx, const char *input)
-      - Return input unchanged if ctx or input is NULL
-      - Walk forward through input while the current character is a space,
-        tab (\t), or other whitespace — use isspace() from <ctype.h>
-      - Return a pointer to the first non-whitespace character
-      - NOTE: your header currently declares void return — change it to
-        const char* whitespace_skipper(calc_ctx_t*, const char*) before
-        implementing, otherwise the caller has no way to use the result
-*/
-
 const char* whitespace_skipper(calc_ctx_t *ctx, const char *input){
 
    if (ctx== NULL || input == NULL) {
-      return;
+      return NULL;
    }
 
    char *read_input = input;
    char *nws_input = input;
-   while (*read_input != "\0") {
-      if (isspace((unsigned char) *input)) {
+   while (*read_input != '\0') {
+      if (!isspace((unsigned char) *read_input)) {
          *nws_input = *read_input;
          nws_input++;
       }
@@ -193,5 +138,47 @@ const char* whitespace_skipper(calc_ctx_t *ctx, const char *input){
 
    }
 
-   return *nws_input;
+   return nws_input;
 }
+
+char* digit_collector(calc_ctx_t* ctx, char* input, Token* token_buffer, int token_count) {
+
+   if (ctx == NULL || input == NULL || token_buffer == NULL)
+      return NULL;
+
+   char *start_checker = input;
+   char *read_input = input;
+   while (*read_input != '\0' && (isdigit((unsigned char)*read_input) || *read_input == '.')) {
+      read_input++;
+   }
+
+   char *end_checker;
+   calc_num_t value = strtod(start_checker, &end_checker);
+
+   token_buffer[token_count].token_type      = TOKEN_NUMBER;
+   token_buffer[token_count].numeric_value   = value;
+   token_buffer[token_count].start_index     = start_checker - input;
+   token_buffer[token_count].length          = (int)(read_input - start_checker);
+
+   return read_input;
+}
+
+/* --------------------------------------------------------------------------
+   3. OPERATOR PRECEDENCE AND ASSOCIATIVITY
+   Depends on: engine — calc_get_operator() must be working
+   Implement these before calc_infix_to_postfix which calls both.
+   --------------------------------------------------------------------------
+
+   TODO 3.1 — operator_precedence(calc_ctx_t *ctx, const Operator *op)
+      - Return -1 if ctx or op is NULL (signals unknown/invalid)
+      - Return op->precedence directly
+      - No calculation needed — precedence is already stored in the struct
+
+   TODO 3.2 — associativity_checker(calc_ctx_t *ctx,
+                                     Associativity output_associativity)
+      - Return CALC_NONE if ctx is NULL
+      - Return output_associativity directly
+      - Used by calc_infix_to_postfix to decide whether to pop operators
+        from the stack before pushing the current one
+*/
+
