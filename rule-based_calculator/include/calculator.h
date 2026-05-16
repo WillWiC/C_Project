@@ -55,6 +55,10 @@ typedef enum {
    CALC_NONE
 } Associativity;
 
+/* Forward declaration — calc_ctx_t is defined below, but OperatorFunc needs
+   it as a pointer parameter. A forward declaration breaks the circular dep. */
+typedef struct calc_ctx_t calc_ctx_t;
+
 typedef calc_error_t (*OperatorFunc)(calc_ctx_t *ctx, calc_num_t a, calc_num_t b, calc_num_t *out);
 
 typedef struct {
@@ -64,7 +68,7 @@ typedef struct {
    OperatorFunc func;
 } Operator;
 
-typedef struct {
+typedef struct calc_ctx_t {
       Operator operator_table[MAX_TOKENS];
       calc_error_t error_state;
       Token token_buffer[MAX_TOKENS];
