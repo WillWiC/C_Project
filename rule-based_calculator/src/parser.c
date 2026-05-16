@@ -223,16 +223,16 @@ calc_error_t calc_infix_to_postfix(calc_ctx_t *ctx,
         }
     }
 
-drain_stack:
-    while (stack_top >= 0) {
-        if (operator_stack[stack_top].token_type == TOKEN_LPAREN) {
-            return CALC_ERR_UNBALANCED_PAREN;
+    drain_stack:
+        while (stack_top >= 0) {
+            if (operator_stack[stack_top].token_type == TOKEN_LPAREN) {
+                return CALC_ERR_UNBALANCED_PAREN;
+            }
+            output_queue[*out_count] = operator_stack[stack_top];
+            (*out_count)++;
+            stack_top--;
         }
-        output_queue[*out_count] = operator_stack[stack_top];
-        (*out_count)++;
-        stack_top--;
-    }
 
-    memcpy(out, output_queue, (*out_count) * sizeof(Token));
-    return CALC_ERR_OK;
+        memcpy(out, output_queue, (*out_count) * sizeof(Token));
+        return CALC_ERR_OK;
 }
